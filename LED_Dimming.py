@@ -1,25 +1,17 @@
-import time
 import RPi.GPIO as GPIO
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+GPIO.setup(16,GPIO.OUT)
 
-GPIO.setup(16, GPIO.OUT)
+my_pwm = GPIO.PWM(16,300)
+my_pwm.start(100)
 
-p = GPIO.PWM(16, 300)  # channel=16 frequency=300Hz
-p.start(0)
+stopit = False
 
-try:
-    while 1:
-        for dc in range(0, 101, 2):
-            p.ChangeDutyCycle(dc)
-            time.sleep(0.03)
-        for dc in range(100, -1, -2):
-            p.ChangeDutyCycle(dc)
-            time.sleep(0.03)
+while(stopit != True):
+        dutycycle = input("Enter ( 0 to QUIT) ")
+        if dutycycle ==0:
+                stopit = True
+        my_pwm.ChangeDutyCycle(int(dutycycle))
 
-except KeyboardInterrupt:
-    pass
-
-p.stop()
 GPIO.cleanup()
